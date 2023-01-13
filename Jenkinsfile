@@ -3,7 +3,7 @@ pipeline {
 
    environment {
      // You must set the following environment variables
-     // ORGANIZATION_NAME
+     ORGANIZATION_NAME = "xiaofeng-tech"
      // YOUR_DOCKERHUB_USERNAME (it doesn't matter if you don't have one)
      
      SERVICE_NAME = "fleetman-webapp"
@@ -14,7 +14,10 @@ pipeline {
       stage('Preparation') {
          steps {
             cleanWs()
-            git credentialsId: 'GitHub', url: "https://github.com/${ORGANIZATION_NAME}/${SERVICE_NAME}"
+//             git credentialsId: 'xiaofengzs', url: "git@github.com:xiaofeng-tech/fleetman-webapp.git"
+            withCredentials([sshUserPrivateKey(credentialsId: 'git-pull-with-ssh', keyFileVariable: 'SSH_KEY')]) {
+              sh 'GIT_SSH_COMMAND="ssh -i $SSH_KEY" git clone git@github.com:xiaofeng-tech/fleetman-webapp.git'
+            }
          }
       }
       stage('Build') {
